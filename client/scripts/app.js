@@ -5,7 +5,14 @@ var app = {
   displayAllMessages: function() {
     for (var key in this.messageStorage) {
         var element = $(document.createElement('div'));
-        element.text(_.escape(this.messageStorage[key].username) + ': ' + _.escape(this.messageStorage[key].text));
+        var $username = $(document.createElement('span'))
+          .addClass(_.escape(this.messageStorage[key].username))
+//          .addClass('username')
+          .text(_.escape(this.messageStorage[key].username + ': '));
+        var $message = $(document.createElement('span'))
+          .addClass(_.escape(this.messageStorage[key].username))
+          .text(_.escape(this.messageStorage[key].text));
+        element.append($username).append($message);
         $('.all-messages').append(element);
       }
   },
@@ -48,6 +55,17 @@ var app = {
     // get most recent 100 messages
     this.fetch('GET', 'order=-createdAt');
 
+    setTimeout(function() {
+      $('span').on("click", function(){
+    // $('.theusername') <- array of all span tags with that username as a class
+        console.log($(this)[0]);
+        // "kat username"
+        var currentClassname = $(this)[0].className;
+        $('.'+currentClassname)
+        .addClass('bold');
+
+    })}, 4000);
+
     setTimeout(function(){for(var key in app.roomStorage) {
       var option = $(document.createElement('option'));
       option.val(_.escape(key));
@@ -57,6 +75,7 @@ var app = {
     // every 3 seconds or sooner we check for the most recent 10 messages
     // setInterval(app.fetch.bind(app, 'GET', 'order=-createdAt'), 3000);
     setTimeout(app.displayAllMessages.bind(app), 3000);
+
   },
   server: 'https://api.parse.com/1/classes/chatterbox',
   // queue: {
@@ -115,7 +134,8 @@ $(document).ready(function() {
         $('.all-messages').append(element);
       }
     }
-  })
+  });
+
 
 });
 // $('message-input').val
